@@ -553,7 +553,21 @@ where
     B::Error: Into<crate::Error> + Send,
 {
     /// Add a new service to this router.
-    pub fn add_service<S>(self, svc: S) -> Router<S, impl Service<Request<Body>>, L>
+    pub fn add_service<S>(
+        self,
+        svc: S,
+    ) -> Router<
+        S,
+        impl Service<
+                Request<Body>,
+                Response = Response<BoxBody>,
+                Future = impl Send + 'static,
+                Error = impl Into<crate::Error> + Send,
+            > + Clone
+            + Send
+            + 'static,
+        L,
+    >
     where
         S: Service<Request<Body>, Response = Response<BoxBody>>
             + NamedService
