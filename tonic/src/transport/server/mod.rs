@@ -26,7 +26,7 @@ pub(crate) use tokio_rustls::server::TlsStream;
 use crate::transport::Error;
 
 use self::recover_error::RecoverError;
-use super::service::{GrpcTimeout, Or, Routes, ServerIo};
+use super::service::{GrpcTimeout, Routes, ServerIo};
 use crate::body::BoxBody;
 use bytes::Bytes;
 use futures_core::Stream;
@@ -553,7 +553,7 @@ where
     B::Error: Into<crate::Error> + Send,
 {
     /// Add a new service to this router.
-    pub fn add_service<S>(self, svc: S) -> Router<S, Or<A, B, Request<Body>>, L>
+    pub fn add_service<S>(self, svc: S) -> Router<S, impl Service<Request<Body>>, L>
     where
         S: Service<Request<Body>, Response = Response<BoxBody>>
             + NamedService
@@ -586,7 +586,7 @@ where
     pub fn add_optional_service<S>(
         self,
         svc: Option<S>,
-    ) -> Router<Either<S, Unimplemented>, Or<A, B, Request<Body>>, L>
+    ) -> Router<Either<S, Unimplemented>, impl Service<Request<Body>>, L>
     where
         S: Service<Request<Body>, Response = Response<BoxBody>>
             + NamedService

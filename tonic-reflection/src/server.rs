@@ -95,7 +95,20 @@ impl<'b> Builder<'b> {
     }
 
     /// Build a gRPC Reflection Service to be served via Tonic.
-    pub fn build(mut self) -> Result<ServerReflectionServer<impl ServerReflection>, Error> {
+    pub fn build(
+        mut self,
+    ) -> Result<
+        impl tonic::codegen::Service<
+                tonic::codegen::http::Request<tonic::transport::Body>,
+                Response = tonic::codegen::http::Response<tonic::body::BoxBody>,
+                Future = impl Send + 'static,
+                Error = impl Into<Box<dyn std::error::Error + Send + Sync>> + Send,
+            > + tonic::transport::NamedService
+            + Clone
+            + Send
+            + 'static,
+        Error,
+    > {
         if self.include_reflection_service {
             self = self.register_encoded_file_descriptor_set(crate::proto::FILE_DESCRIPTOR_SET);
         }
