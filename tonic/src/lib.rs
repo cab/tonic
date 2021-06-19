@@ -116,3 +116,9 @@ pub(crate) type Error = Box<dyn std::error::Error + Send + Sync>;
 #[cfg(feature = "codegen")]
 #[cfg_attr(docsrs, doc(cfg(feature = "codegen")))]
 pub mod codegen;
+
+#[doc(hidden)]
+pub use prost1 as prost;
+
+#[doc(hidden)]
+pub use prost_types as prost_types;

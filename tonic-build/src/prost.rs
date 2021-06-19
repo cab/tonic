@@ -353,6 +353,8 @@ impl Builder {
         #[cfg(feature = "rustfmt")]
         let format = self.format;
 
+        config.prost_path("::tonic::prost");
+        config.prost_types_path("::tonic::prost_types");
         config.out_dir(out_dir.clone());
         if let Some(path) = self.file_descriptor_set_path.as_ref() {
             config.file_descriptor_set_path(path);

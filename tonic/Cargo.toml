@@ -38,7 +38,7 @@ tls = ["transport", "tokio-rustls"]
 tls-roots-common = ["tls"]
 tls-roots = ["tls-roots-common", "rustls-native-certs"]
 tls-webpki-roots = ["tls-roots-common", "webpki-roots"]
-prost = ["prost1", "prost-derive"]
+prost = ["prost1", "prost-derive", "prost-types"]
 
 # [[bench]]
 # name = "bench_main"
@@ -63,6 +63,7 @@ pin-project = "1.0"
 # prost
 prost1 = { package = "prost", version = "0.7", optional = true }
 prost-derive = { version = "0.7", optional = true }
+prost-types = { version = "0.7", optional = true }
 
 # codegen
 async-trait = { version = "0.1.13", optional = true }
