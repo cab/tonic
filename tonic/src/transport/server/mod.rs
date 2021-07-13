@@ -135,6 +135,16 @@ pub trait NamedService {
     const NAME: &'static str;
 }
 
+pub trait NameableService {
+    fn name(&self) -> &str;
+}
+
+impl<T> NameableService for T where T: NamedService {
+    fn name(&self) -> &str {
+        Self::NAME
+    }
+}
+
 impl<S: NamedService, T> NamedService for Either<S, T> {
     const NAME: &'static str = S::NAME;
 }
@@ -328,7 +338,7 @@ impl<L> Server<L> {
     pub fn add_service<S>(&mut self, svc: S) -> Router<S, Unimplemented, L>
     where
         S: Service<Request<Body>, Response = Response<BoxBody>>
-            + NamedService
+            + NameableService
             + Clone
             + Send
             + 'static,
@@ -522,14 +532,14 @@ impl<S, L> Router<S, Unimplemented, L> {
     pub(crate) fn new(server: Server<L>, svc: S) -> Self
     where
         S: Service<Request<Body>, Response = Response<BoxBody>>
-            + NamedService
+            + NameableService
             + Clone
             + Send
             + 'static,
         S::Future: Send + 'static,
         S::Error: Into<crate::Error> + Send,
     {
-        let svc_name = <S as NamedService>::NAME;
+        let svc_name = svc.name();
         let svc_route = format!("/{}", svc_name);
         let pred = move |req: &Request<Body>| {
             let path = req.uri().path();
